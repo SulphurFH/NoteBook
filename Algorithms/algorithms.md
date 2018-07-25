@@ -1,5 +1,23 @@
 # 单例模式
 
+## __metaclass__
+
+```
+class Singleton(type):
+    _instance = {}
+    def __call__(cls, *args, **kwargs):
+        if cls not in Singleton._instance:
+            Singleton._instance[cls] = type.__call__(cls, *args, **kwargs)
+        return Singleton._instance[cls]
+
+class A(object):
+    __metaclass__ = Singleton
+
+a1 = A()
+a2 = A()
+print id(a1) == id(a2)
+```
+
 ## __new__
 
 ```
@@ -89,40 +107,6 @@ if __name__ == "__main__":
     for i in range(5):
         c = Consumer()
         c.start()
-```
-
-## 协程
-
-```
-# -*- coding: utf-8 -*-
-import time
-
-
-def consumer():
-    r = ''
-    while True:
-        n = yield r
-        if not n:
-            return
-        print "[CONSUMER] Consuming %s ..." % n
-        time.sleep(1)
-        r = '200 OK'
-
-
-def produce(c):
-    c.next()
-    n = 0
-    while n < 5:
-        n += 1
-        print "[PRODUCE] Producing %s ..." % n
-        r = c.send(n)
-        print "[PRODUCE] Consuming return %s ..." % r
-    c.close()
-
-
-if __name__ == "__main__":
-    c = consumer()
-    produce(c)
 ```
 
 # 二分查找
