@@ -4,7 +4,8 @@
 ## Docker编译
 
 ```
-docker build -t fanghao/centos:7.1 .    # .表示使用当前路径下的Dockerfie文件
+# .表示使用当前路径下的Dockerfie文件
+docker build -t fanghao/centos:7.1 .
 ```
 
 ## Docker镜像查看
