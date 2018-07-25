@@ -1,6 +1,6 @@
 # Git
 
-> 项目上线
+## 项目上线
 
 ```
 gco master
@@ -21,7 +21,7 @@ git push origin release-date
 GitLab发起合并申请，注意合并到master分支
 ```
 
-> 解决冲突
+## 解决冲突
 
 ```
 git rebase origin/dev
@@ -34,14 +34,14 @@ gst 查看是否还有冲突
 git push origin XXXX -f
 ```
 
-> Git操作
+## 撤销修改
 
 ```
 git blame filename
 git checkout . && git clean -xdf
 ```
 
-> Github GitLab共存
+## Github GitLab共存
 
 ### 生成Github SSH
 
