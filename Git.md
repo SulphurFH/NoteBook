@@ -34,10 +34,15 @@ gst 查看是否还有冲突
 git push origin XXXX -f
 ```
 
-## 撤销修改
+## 查看修改记录
 
 ```
 git blame filename
+```
+
+## 撤销修改
+
+```
 git checkout . && git clean -xdf
 ```
 
