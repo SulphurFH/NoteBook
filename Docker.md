@@ -47,6 +47,12 @@ docker ps
 
 ```
 docker rmi
+
+# 清理none镜像
+docker rmi $(docker images | grep "none" | awk '{print $3}')
+
+# 清理dangling镜像
+docker rmi $(docker images -f "dangling=true" -q)
 ```
 
 ## Docker容器删除
@@ -55,6 +61,12 @@ docker rmi
 # -f 为强制删除正在运行的容器
 docker rm -f 'name'
 docker rm
+
+# 停止容器
+docker stop $(docker ps -a | grep "Exited" | awk '{print $1 }')
+
+# 删除容器
+docker rm $(docker ps -a | grep "Exited" | awk '{print $1 }')
 ```
 
 ## Docker进入container
