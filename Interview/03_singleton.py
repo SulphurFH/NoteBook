@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
+
 def singleton(cls, *args, **kwargs):
     instance = {}
-    
+
     def wrapper():
         if cls not in instance:
             instance[cls] = cls(*args, **kwargs)
@@ -13,6 +14,7 @@ def singleton(cls, *args, **kwargs):
 @singleton
 class MyClass(object):
     a = 1
+
 
 a = MyClass()
 b = MyClass()
