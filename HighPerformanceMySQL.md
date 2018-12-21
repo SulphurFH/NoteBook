@@ -1,3 +1,4 @@
+## 服务器性能剖析
 
 ### MySQL status日志
 
@@ -106,3 +107,10 @@ else if ($2 ~ /Uptime / && count >= 2){\
 ```
 mysql -uroot -hhost -P3306 -p -e 'SHOW PROCESSLIST\G' |grep State: | sort | uniq -c | sort -rn
 ```
+
+
+## Schema与数据类型优化
+
+InnoDB 使用bit存储NULL，对于稀疏数据（多数值为NULL，少数的列非NULL）会有很好的空间效率，不适用MyISAM
+
+DECIMAL比浮点类型消耗更大，对于及要求小数运算精确性，又要求性能的，可以选取BIGINT，相应的从小数变整数即可
