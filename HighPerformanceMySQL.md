@@ -114,3 +114,7 @@ mysql -uroot -hhost -P3306 -p -e 'SHOW PROCESSLIST\G' |grep State: | sort | uniq
 InnoDB 使用bit存储NULL，对于稀疏数据（多数值为NULL，少数的列非NULL）会有很好的空间效率，不适用MyISAM
 
 DECIMAL比浮点类型消耗更大，对于及要求小数运算精确性，又要求性能的，可以选取BIGINT，相应的从小数变整数即可
+
+存储UUID，应该移除'-'符号，或者最好使用UNHEX()转换为16字节数字，并存储在BINARY(16)列中，检索用HEX()格式化十六进制数字
+
+太多的列、太多的关联（<12个最好）、枚举alter消耗大（选用整数型做外键关联到字典表比较合适）

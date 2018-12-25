@@ -46,6 +46,12 @@ git blame filename
 git checkout . && git clean -xdf
 ```
 
+## 彻底恢复到某个版本
+
+```
+git reset --hard 版本号的sha1
+```
+
 ## Github GitLab共存
 
 ### 生成Github SSH
@@ -104,4 +110,20 @@ git config --global --unset user.email 取消全局设置
 cd $(你的项目路径)
 git config --local user.name
 git config --local user.email
+```
+
+## GitFlow工作流  
+
+```
+git checkout -t origin/develop
+git flow init -d
+git checkout develop
+git flow feature start fh-ft-xxxx
+git flow feature finish
+git flow feature rebase develop
+git checkout release
+git flow bugfix start fh-fix-xxxx
+git flow bugfix finish --no-ff
+git flow hotfix start fh-hotfix-xxxx
+git flow hotfix finish
 ```
