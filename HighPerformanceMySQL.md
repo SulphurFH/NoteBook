@@ -118,3 +118,13 @@ DECIMAL比浮点类型消耗更大，对于及要求小数运算精确性，又�
 存储UUID，应该移除'-'符号，或者最好使用UNHEX()转换为16字节数字，并存储在BINARY(16)列中，检索用HEX()格式化十六进制数字
 
 太多的列、太多的关联（<12个最好）、枚举alter消耗大（选用整数型做外键关联到字典表比较合适）
+
+引用技术表可以创建多行，防止update一行出现锁竞争，使用RAND() * count来随机选择一行，最后使用SUM()取总数
+
+```
+INSERT INTO tablename(values, values) VALUES(values, values) ON DUPLICATE KEY UPDATE values = values;
+```
+
+要关联的表字段一致，可以使用USING获得更好的性能
+
+ALTER TABLE需要注意ALTER COLUMN，MODIFY COLUMN，CHANGE COLUMN的合适类型
