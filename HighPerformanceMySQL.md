@@ -121,6 +121,7 @@ DECIMAL比浮点类型消耗更大，对于及要求小数运算精确性，又�
 
 引用技术表可以创建多行，防止update一行出现锁竞争，使用RAND() * count来随机选择一行，最后使用SUM()取总数
 
+
 ```
 INSERT INTO tablename(values, values) VALUES(values, values) ON DUPLICATE KEY UPDATE values = values;
 ```
@@ -128,3 +129,24 @@ INSERT INTO tablename(values, values) VALUES(values, values) ON DUPLICATE KEY UP
 要关联的表字段一致，可以使用USING获得更好的性能
 
 ALTER TABLE需要注意ALTER COLUMN，MODIFY COLUMN，CHANGE COLUMN的合适类型
+
+## 创建高性能的索引
+
+Memory引擎具有哈希索引（针对索引列的所有内容哈希，所以不支持范围查询）
+InnoDB会有一个自适应哈希索引，会根据使用比较频繁的索引，在B-Tree索引之上在建立哈希索引，用户无法控制但可以关闭
+
+自定义哈希索引
+
+
+```
+SELECT id FROM table_name WHERE filed="" AND filed_crc=CRC32("")
+CREATE TABLE table_name (
+ .................
+ ................
+ filed_crc IN UNSIGNED NOT NULL DEFAULT 0,
+)
+```
+缺点是需要手工维护这个索引列
+此书中使用的是创建触发器，但我觉得在项目里面可以写到代码里面执行insert
+不使用SHA1()/MD5()的原因是慢、并且会生成很长的字符串
+但CRC32在数据很大的时候可能会冲突
