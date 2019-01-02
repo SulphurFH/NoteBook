@@ -150,3 +150,34 @@ CREATE TABLE table_name (
 此书中使用的是创建触发器，但我觉得在项目里面可以写到代码里面执行insert
 不使用SHA1()/MD5()的原因是慢、并且会生成很长的字符串
 但CRC32在数据很大的时候可能会冲突
+
+## 高性能索引策略
+
+* 独立的列（列不能参与计算）
+
+* 前缀索引(优点：更小更快 缺点：无法order by, group by)
+
+    ```
+    select count(*) ... from ... group by .... order by ... desc limit ....;
+    select count(*) .... LEFT(column, n) from ... group by .... order by ... desc limit ....;
+    ```
+    或者
+    ```
+    select count(distinct city)/count(*) from ...; # 计算出选择性
+    ```
+    计算取的前缀长度与选择性比较
+    ```
+    select count(distinct left(city, 3))/count(*) as sel3,
+    	count(distinct left(city, 4))/count(*) as sel4,
+    	count(distinct left(city, 5))/count(*) as sel5,
+    	count(distinct left(city, 6))/count(*) as sel6,
+    	count(distinct left(city, 7))/count(*) as sel7,
+    	count(distinct left(city, 8))/count(*) as sel8 from ....;
+    ```
+    根据前缀长度创建索引
+    ```
+    alter table .... add key (column(length));
+    ```
+
+    后缀索引也有用途，MySQL无法反向索引，但可以把字符串反转后存储
+
