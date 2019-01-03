@@ -181,3 +181,12 @@ CREATE TABLE table_name (
 
     后缀索引也有用途，MySQL无法反向索引，但可以把字符串反转后存储
 
+## 选择合适的索引顺序
+
+* 不考虑排序的话，选择性最高的放在前面(注意全局基数和选择性)
+    ```
+    select count(distinct columnA)/count(*) as columnA,
+    	count(distinct columnB)/count(*) as columnB,
+	count(*)
+	from ....;
+    ```
