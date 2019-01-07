@@ -190,3 +190,7 @@ CREATE TABLE table_name (
 	count(*)
 	from ....;
     ```
+
+## Order By
+
+* Order By子句和查找型查询的限制一样，需要满足索引最左前缀
