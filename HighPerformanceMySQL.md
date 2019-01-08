@@ -194,3 +194,18 @@ CREATE TABLE table_name (
 ## Order By
 
 * Order By子句和查找型查询的限制一样，需要满足索引最左前缀
+  索引顺序与Order By字句完全一致，并且都是正序或者倒序时才能使用索引对结果排序
+  关联查询则看order by引用的字段全部为第一个表
+  看where和order by是否可以组成最左前缀，where条件中是常熟也可以
+
+## 冗余和重复索引
+
+* InnoDB主键已经包含在二级索引中
+
+* 有时候需要建冗余索引来满足不同查询
+
+* MySQL检查重复索引工具: pt-duplicate-key-checker，有时候INFORMATION_SCHEMA中有大量的表不适合来查询，外部工具比较合适
+
+## 未使用的索引
+
+* 打开userstates变量，运行一段时间查询INFORMATION_SCHEMA.INDEX_STATISTICS
