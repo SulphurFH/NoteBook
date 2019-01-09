@@ -209,3 +209,16 @@ CREATE TABLE table_name (
 ## 未使用的索引
 
 * 打开userstates变量，运行一段时间查询INFORMATION_SCHEMA.INDEX_STATISTICS
+
+## 支持多种过滤条件
+
+* 如果某个列的选择性很低，但是使用场景特别多，例如sex，可以把sex加入到联合索引中，当查询用不到sex的时候，
+  为了满足最左前缀，可以使用sex in('m', 'f')这种方式， 但列有太多值，这么做就不太合适
+
+* in并不能太多，例如
+    ```
+    where columnA in('A', 'B', 'C')
+    and columnB in('A', 'B', 'C', 'D')
+    and columnC in('A', 'B')
+    ```
+  就会有4*3*2种组合，执行计划需要检查where字句中所有的24中组合
