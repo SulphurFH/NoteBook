@@ -222,3 +222,21 @@ CREATE TABLE table_name (
     and columnC in('A', 'B')
     ```
   就会有4*3*2种组合，执行计划需要检查where字句中所有的24中组合
+
+## 避免多个范围条件
+
+* MySQL日期函数DATE_SUB(NOW(), INTERVAL 1 DAY)
+* ORDER BY LIMIT数据太多的时候，业务方面可以限制翻页数量
+  或者使用延时关联
+
+    ```
+    SELECT cols FROM TABLE INNER JOIN (
+	SELECT primary_key_cols FROM TABLE
+	WHERE ... ORDER BY LIMIT ..., ...
+    ) AS ... USING(primary_key_cols);
+    ```
+
+## 维护索引和表
+
+* CHECK TABLE/REPAIR TABLE
+* 当存储引擎不支持REPAIR TABLE可以使用ALTER TABLE tablename ENGINE=INNODB; 这只是针对innodb引擎的一个例子
