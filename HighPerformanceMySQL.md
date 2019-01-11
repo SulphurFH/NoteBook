@@ -240,3 +240,9 @@ CREATE TABLE table_name (
 
 * CHECK TABLE/REPAIR TABLE
 * 当存储引擎不支持REPAIR TABLE可以使用ALTER TABLE tablename ENGINE=INNODB; 这只是针对innodb引擎的一个例子
+
+## 更新索引统计信息
+
+* show index from table_name; Cardinality代表存储引擎估算索引列有多少个不同的取值
+
+* 索引统计信息自动更新关闭，只能手动周期性的执行analyze table
