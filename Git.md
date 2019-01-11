@@ -58,7 +58,7 @@ git reset --hard 版本号的sha1
 
 ```
 ssh-keygen -t rsa -C "XXXXX@gmail.com"
-取名为id_github_ras
+取名为id_github_rsa
 ssh-add ~/.ssh/id_github_rsa
 ```
 
@@ -66,7 +66,7 @@ ssh-add ~/.ssh/id_github_rsa
 
 ```
 ssh-keygen -t rsa -C "XXXXX@gmail.com"
-取名为id_gitlab_ras
+取名为id_gitlab_rsa
 ssh-add ~/.ssh/id_gitlab_rsa
 ```
 
