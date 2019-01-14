@@ -151,7 +151,7 @@ CREATE TABLE table_name (
 不使用SHA1()/MD5()的原因是慢、并且会生成很长的字符串
 但CRC32在数据很大的时候可能会冲突
 
-## 高性能索引策略
+### 高性能索引策略
 
 * 独立的列（列不能参与计算）
 
@@ -181,7 +181,7 @@ CREATE TABLE table_name (
 
     后缀索引也有用途，MySQL无法反向索引，但可以把字符串反转后存储
 
-## 选择合适的索引顺序
+### 选择合适的索引顺序
 
 * 不考虑排序的话，选择性最高的放在前面(注意全局基数和选择性)
     ```
@@ -191,14 +191,14 @@ CREATE TABLE table_name (
 	from ....;
     ```
 
-## Order By
+### Order By
 
 * Order By子句和查找型查询的限制一样，需要满足索引最左前缀
   索引顺序与Order By字句完全一致，并且都是正序或者倒序时才能使用索引对结果排序
   关联查询则看order by引用的字段全部为第一个表
   看where和order by是否可以组成最左前缀，where条件中是常熟也可以
 
-## 冗余和重复索引
+### 冗余和重复索引
 
 * InnoDB主键已经包含在二级索引中
 
@@ -210,7 +210,7 @@ CREATE TABLE table_name (
 
 * 打开userstates变量，运行一段时间查询INFORMATION_SCHEMA.INDEX_STATISTICS
 
-## 支持多种过滤条件
+### 支持多种过滤条件
 
 * 如果某个列的选择性很低，但是使用场景特别多，例如sex，可以把sex加入到联合索引中，当查询用不到sex的时候，
   为了满足最左前缀，可以使用sex in('m', 'f')这种方式， 但列有太多值，这么做就不太合适
@@ -223,7 +223,7 @@ CREATE TABLE table_name (
     ```
   就会有4*3*2种组合，执行计划需要检查where字句中所有的24中组合
 
-## 避免多个范围条件
+### 避免多个范围条件
 
 * MySQL日期函数DATE_SUB(NOW(), INTERVAL 1 DAY)
 * ORDER BY LIMIT数据太多的时候，业务方面可以限制翻页数量
@@ -236,13 +236,27 @@ CREATE TABLE table_name (
     ) AS ... USING(primary_key_cols);
     ```
 
-## 维护索引和表
+### 维护索引和表
 
 * CHECK TABLE/REPAIR TABLE
-* 当存储引擎不支持REPAIR TABLE可以使用ALTER TABLE tablename ENGINE=INNODB; 这只是针对innodb引擎的一个例子
+* 当存储引擎不支持REPAIR TABLE可以使用ALTER TABLE <tablename> ENGINE=<engine>; 这只是针对innodb引擎的一个例子
 
-## 更新索引统计信息
+### 更新索引统计信息
 
 * show index from table_name; Cardinality代表存储引擎估算索引列有多少个不同的取值
 
 * 索引统计信息自动更新关闭，只能手动周期性的执行analyze table
+
+### 减少索引和数据的碎片
+
+  通过OPTIMIZE TABLE或者ALTER TABLE <tablename> ENGINE=<engine>;
+
+
+## 查询性能优化
+
+### 优化数据访问
+
+* 查询不需要的记录
+* 多变关联返回全部列
+* 总是取除全部列，但如果多余的列做缓存，也不一定就是不好的
+* 重复查询相同的数据
