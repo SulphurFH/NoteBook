@@ -274,3 +274,18 @@ CREATE TABLE table_name (
 
 * 缓存的效率更高
 * 将关联查询重构拆散到应用程序中
+
+## MySQL执行基础
+
+### MySQL客户端/服务器通讯
+#### 查询状态
+
+* SHOW FULL PROCESSLIST
+
+### 查询缓存
+
+### 查询优化处理
+
+* SHOW STATUS LIKE 'Last_query_cost';
+
+  查询优化器分静态优化与动态优化
