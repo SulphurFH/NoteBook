@@ -289,3 +289,11 @@ CREATE TABLE table_name (
 * SHOW STATUS LIKE 'Last_query_cost';
 
   查询优化器分静态优化与动态优化
+
+* MySQL中IN()中有大量数值，MySQL处理更快
+
+* MySQL关联查询都是执行嵌套循环关联的操作
+
+### MySQL执行计划
+
+* EXPLAIN EXTENDED SQL; SHOW WARNINGS;即可查看重构出的查询
