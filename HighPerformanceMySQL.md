@@ -297,3 +297,10 @@ CREATE TABLE table_name (
 ### MySQL执行计划
 
 * EXPLAIN EXTENDED SQL; SHOW WARNINGS;即可查看重构出的查询
+
+### 排序优化
+
+* 内存排序和磁盘排序MySQL统一成为filesort，可以在explain看到为Using filesort
+
+* 关联查询的时候，如果ORDER BY的字段都来自第一个表，那么在关联处理第一个表的时候就文件排序，可以看到Using filsort
+  除此之外，都需要关联结束后文件排序，Using temporary;Using filesort。如果有Limit，也在排序之后Limit
