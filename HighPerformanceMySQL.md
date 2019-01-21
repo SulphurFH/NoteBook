@@ -304,3 +304,18 @@ CREATE TABLE table_name (
 
 * 关联查询的时候，如果ORDER BY的字段都来自第一个表，那么在关联处理第一个表的时候就文件排序，可以看到Using filsort
   除此之外，都需要关联结束后文件排序，Using temporary;Using filesort。如果有Limit，也在排序之后Limit
+
+### 关联子查询
+
+* IN查询优化
+
+    SELECT * FROM sakila.film
+    WHERE film_id IN(
+    	SELECT film_id FROM sakila.film_actor WHERE actor_id = 1
+    );
+
+    优化为
+
+    SELECT film.* FROM sakila.film
+    	INNER JOIN sakila.film_actor USING(film_id)
+    WHERE actor_id = 1;
