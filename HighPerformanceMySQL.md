@@ -319,3 +319,15 @@ CREATE TABLE table_name (
     SELECT film.* FROM sakila.film
     	INNER JOIN sakila.film_actor USING(film_id)
     WHERE actor_id = 1;
+
+* 通过对比子查询/关联查询的QPS来决定，可将子查询改为关联查询或反之 
+
+### UNION限制
+
+* UNION的字句根据LIMIT取部分数据，或者先排好序在合并结果，需要在子句中使用LIMIT来减少临时表的数据集
+
+### MySQL无法利用多核来并行查询
+
+### 松散索引
+
+* EXPLAIN中是Using index for group-by
