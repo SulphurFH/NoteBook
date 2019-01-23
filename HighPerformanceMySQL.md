@@ -331,3 +331,19 @@ CREATE TABLE table_name (
 ### 松散索引
 
 * EXPLAIN中是Using index for group-by
+
+
+### MAX与MIN
+
+* 有时候需要取最大值或者最小值的时候，看看是否可以根据主键判断，可以移除MIN或者MAX改用LIMIT
+
+
+### 同一个表查询更新
+
+  UPDATE tb1
+  INNER JOIN(
+    SELECT type, count(*) AS cnt
+    FROM tb1
+    GROUP BY type
+  ) AS der USING(type)
+  SET tb1.cnt = der.cnt
