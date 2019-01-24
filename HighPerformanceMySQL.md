@@ -347,3 +347,40 @@ CREATE TABLE table_name (
     GROUP BY type
   ) AS der USING(type)
   SET tb1.cnt = der.cnt
+
+
+### COUNT
+
+* 统计某个列值的数量，要求列值是非空的（不统计NULL）
+
+* 统计结果集的行数
+
+* MyISAM的count在没有where条件时非常快，比如说可以反向取值，用不加条件的count总数作为子查询
+  使用反向（数量少的过滤项）来做查询
+
+
+### 近似值
+
+* 如果某些业务场景不需要很精确的值，可以使用explain中的优化器的估算行数
+
+* 快速、精确、简单三者永远只能满足两个
+
+
+### 优化关联查询
+
+* 确保ON和USING子句上的列有索引，一般来说需要在关联顺序中第二个表的相应列创建索引
+
+* 确保GROUP BY和ORDER BY中的表达式只涉及一个表的列
+
+### 优化子查询
+
+* 尽可能使用关联查询
+
+
+### 优化GROUP BY和DISTINCT
+
+* 都可以使用索引优化
+
+* GROUP BY没有索引的时候，有两种策略，using template table或者using filesort
+
+* 分组查询中SELECT直接使用非分组列不是good idea
