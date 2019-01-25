@@ -384,3 +384,19 @@ CREATE TABLE table_name (
 * GROUP BY没有索引的时候，有两种策略，using template table或者using filesort
 
 * 分组查询中SELECT直接使用非分组列不是good idea
+
+
+### LIMIT分页优化
+
+* 对于limit 1000, 20这种，可以尽可能使用索引覆盖扫描，而不是查询所有列，然后再做关联查询
+    SELECT film.film_id, film_description
+    FROM sakila.film
+      INNER JOIN (
+        SELECT film_id FROM sakila.film
+	ORDER BY title LIMIT 50, 5
+      ) AS lim USING(film_id)
+
+* 或者是针对返回的主键查询
+    SELECT * FROM sakila.rental
+    WHERE rentail_id > 16303
+    ORDER BY rental_id DESC LIMIT 20;
