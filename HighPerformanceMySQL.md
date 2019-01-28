@@ -400,3 +400,17 @@ CREATE TABLE table_name (
     SELECT * FROM sakila.rental
     WHERE rentail_id > 16303
     ORDER BY rental_id DESC LIMIT 20;
+
+
+### 优化UNION
+
+* 除非确实需要服务器消除重复行，否则一定要使用UNION ALL
+
+### 避免重复查询刚刚更新的数据
+
+```
+UPDATE t1 SET lastUpdated = NOW() WHERE id = 1 AND @now := NOW();
+SELECT @now;
+```
+
+* 变量赋值和取值发生在执行查询的同一阶段
