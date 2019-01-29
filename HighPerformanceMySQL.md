@@ -414,3 +414,31 @@ SELECT @now;
 ```
 
 * 变量赋值和取值发生在执行查询的同一阶段
+
+
+### SELECT FOR UPDATE优化
+
+```
+BEGIN;
+SELECT id FROM table
+  WHERE 
+  LIMIT 10;
+
+UPDATE table
+  SET
+  WHERE id IN ()
+COMMIT;
+```
+
+但会造成查询阻塞
+
+```
+SET AUTOCOMMIT = 1;
+COMMIT;
+UPDATE table
+  SET
+  WHERE
+  LIMIT 10;
+SET AUTOCOMMIT = 0;
+SELECT id FROM table WHERE ;
+```
