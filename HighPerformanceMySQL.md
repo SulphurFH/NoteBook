@@ -266,7 +266,7 @@ CREATE TABLE table_name (
 
 查询需要扫描大量数据，但是只返回少数行
 
-* 索引覆盖扫描 
+* 索引覆盖扫描
 * 改变库表结构，使用单独的汇总表
 * 重写复杂查询
 
@@ -320,7 +320,7 @@ CREATE TABLE table_name (
     	INNER JOIN sakila.film_actor USING(film_id)
     WHERE actor_id = 1;
 
-* 通过对比子查询/关联查询的QPS来决定，可将子查询改为关联查询或反之 
+* 通过对比子查询/关联查询的QPS来决定，可将子查询改为关联查询或反之
 
 ### UNION限制
 
@@ -421,7 +421,7 @@ SELECT @now;
 ```
 BEGIN;
 SELECT id FROM table
-  WHERE 
+  WHERE
   LIMIT 10;
 
 UPDATE table
@@ -475,3 +475,35 @@ SELECT id FROM table WHERE ;
 ### 分区表查询优化
 
 * 在WHERE条件中带入分区列，有时多余也要带上, 可以用EXPLAIN PARTITION查看优化器是否执行了分区过滤(partitions字段)
+
+### 视图
+
+* 合并算法（优先使用）
+
+* 临时表算法
+
+#### 查看视图查询使用什么算法
+
+```
+EXPLAIN SELECT * FROM view
+```
+
+查看select_type字段（PRIMARY-合并；DERIVED-临时表）
+视图实现算法是视图本身属性，和查询语句无关，可以指定视图使用算法
+
+```
+CREATE ALGORITHM=TEMPTABLE VIEW v1 AS SELECT * FROM sakila.actor;
+```
+#### 可更新视图
+
+* 如何视图定义中包含了GROUP BY， UNION，聚合函数，则无法更新
+
+* 视图的查询语句可以是关联语句，但是更新的列比如来自同一个表
+
+* 所有临时算法实现的视图无法被更新
+
+* CHECK OPTION子句，表示任何通过视图更新的行，都必须符合视图本身的WHERE条件定义
+
+#### 视图对性能的影响
+
+* 可以使用视图基于列的权限控制，而不需要专门在系统中创建列权限，没有额外的开销
