@@ -533,3 +533,15 @@ CREATE ALGORITHM=TEMPTABLE VIEW v1 AS SELECT * FROM sakila.actor;
 * 触发器不能一定保证更新的原子性(MyISAM不可以保证，InnoDB表上的触发器是在同一个事务中完成的，没问题)
   但在InnoBD上要注意MVCC，如果要实现类似于外键约束的功能，在BEFORE INSERT编写触发器检查别的表，而没有SELECT FOR UPDATE
   并发的更新语句会立即更新记录，造成数据不一致
+
+### 查询缓存
+
+* MySQL查询缓存对应用程序来说是透明的
+
+* 查询本身，查询的数据库，客户端协议版本都会影响缓存是否命中
+
+* 查询中NOW(), CURRENT_DATE()等查询不会缓存
+
+* 如果希望执行一个带日期的查询，最好把日期提前计算好
+    DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY) -- Not cachedable
+    DATE_SUB('2019-02-13', INTERVAL 1 DAY) -- Cachedable
