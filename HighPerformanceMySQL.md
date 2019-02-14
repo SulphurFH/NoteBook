@@ -545,3 +545,19 @@ CREATE ALGORITHM=TEMPTABLE VIEW v1 AS SELECT * FROM sakila.actor;
 * 如果希望执行一个带日期的查询，最好把日期提前计算好
     DATE_SUB(CURRENT_DATE, INTERVAL 1 DAY) -- Not cachedable
     DATE_SUB('2019-02-13', INTERVAL 1 DAY) -- Cachedable
+
+#### 缓存未命中的可能
+
+1. 查询语句没法被缓存（例如有不确定的函数）
+2. MySQL尚未处理这个查询
+3. 查询缓存用光
+
+#### 大量缓存未命中
+
+1. 缓存尚未预热
+2. 查询语句未执行（ORM会好一些）
+3. 缓存失效操作太多（缓存碎片，内存不足，数据修改）
+
+* 通过SHOW STATUS LIKE '%cache%'中的Qcache_lowmen_prunes查看有多少次缓存失败是由于内存不足导致
+
+* 通过Com_select和Qcache_inserts的相对值来判断缓存结构在失效前有没有被其他select使用
