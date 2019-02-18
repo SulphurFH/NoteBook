@@ -561,3 +561,32 @@ CREATE ALGORITHM=TEMPTABLE VIEW v1 AS SELECT * FROM sakila.actor;
 * 通过SHOW STATUS LIKE '%cache%'中的Qcache_lowmen_prunes查看有多少次缓存失败是由于内存不足导致
 
 * 通过Com_select和Qcache_inserts的相对值来判断缓存结构在失效前有没有被其他select使用
+
+#### 配置维护查询缓存
+
+* query_cache_type
+    是否打开查询缓存
+
+* query_cache_size
+    查询缓存总内存空间，单位字节，1024倍数
+
+* query_cache_min_res_unit
+    查询缓存中分配内存块的最小单位
+
+* query_cache_limit
+    缓存的最大查询结果
+
+* query_cache_wlock_invalidate
+    表被其他链接锁住，是否还可以从查询缓存中返回结果，建议默认值
+
+
+1. 减少碎片
+    合理的query_cache_min_res_unit，取值可以参考(query_cache_size-Qcache_free_memory)/Qcache_queries_in_cache
+    观察Qcache_free_blocks来观察碎片
+
+2. 提高查询缓存的使用率
+    如果没有缓存碎片问题，但是命中率低，还可能是查询缓存的内存空间太小导致
+
+分析和配置查询缓存的流程图
+
+![如何分析和配置查询缓存](/home/fanghao/Documents/Code/Github/NoteBook/HighPerformanceMySQL/screenshots/query_cache.png  "如何分析和配置查询缓存")
