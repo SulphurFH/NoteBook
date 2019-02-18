@@ -589,4 +589,4 @@ CREATE ALGORITHM=TEMPTABLE VIEW v1 AS SELECT * FROM sakila.actor;
 
 分析和配置查询缓存的流程图
 
-![如何分析和配置查询缓存](/home/fanghao/Documents/Code/Github/NoteBook/HighPerformanceMySQL/screenshots/query_cache.png  "如何分析和配置查询缓存")
+![如何分析和配置查询缓存](./screenshots/query_cache.png  "如何分析和配置查询缓存")
