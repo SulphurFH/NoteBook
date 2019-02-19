@@ -590,3 +590,32 @@ CREATE ALGORITHM=TEMPTABLE VIEW v1 AS SELECT * FROM sakila.actor;
 分析和配置查询缓存的流程图
 
 ![如何分析和配置查询缓存](./screenshots/query_cache.png  "如何分析和配置查询缓存")
+
+#### InnoDB缓存
+
+* 如果表上有锁，则无法通过缓存获取数据
+
+#### 通用查询缓存优化
+
+* 多个小表替代大表
+
+* 批量写入
+
+* 控制query_cache_size避免太大造成过期的操作导致服务器僵死
+
+* 可以通过SELECT语句中SQL_CACHE和SQL_NO_CACHE来控制是否需要进行缓存
+
+* 对于写密集型应用，可以直接禁用缓存
+
+## 优化服务器配置
+
+###查看MySQL当前使用配置文件地址
+
+```
+which mysqld
+/usr/sbin/mysqld
+/usr/sbin/mysqld --verbose --help | grep -A 1 'Default options'
+```
+
+对于服务器上只有一个MySQL实例很管用
+每次修改后应该检查SHOW GLOBAL VARIABLES确认修改已经改变
