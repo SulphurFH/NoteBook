@@ -10,7 +10,7 @@
 
 * [Algorithms](https://github.com/SulphurFH/NoteBook/tree/master/Algorithms) - 算法总结
 * [Go](https://github.com/SulphurFH/NoteBook/tree/master/Go) - golang
-* [Hadoop](https://github.com/SulphurFH/NoteBook//tree/masterHadoop) - Hadoop
+* [Hadoop](https://github.com/SulphurFH/NoteBook/tree/master/Hadoop) - Hadoop
 * [HighPerformanceMySQL](https://github.com/SulphurFH/NoteBook/tree/master/HighPerformanceMySQL) - HighPerformanceMySQL
 * [Interview](https://github.com/SulphurFH/NoteBook/tree/master/Interview) - 面试总结
 * [Python_Design_Patterns](https://github.com/SulphurFH/NoteBook/tree/master/Python_Design_Patterns) - Python设计模式
