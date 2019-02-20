@@ -619,3 +619,21 @@ which mysqld
 
 对于服务器上只有一个MySQL实例很管用
 每次修改后应该检查SHOW GLOBAL VARIABLES确认修改已经改变
+
+## 复制
+
+* 基于行的复制和基于语句的复制
+
+* MySQL的复制大部分向后兼容的，可以从4.0复制到5.0，但是不能从5.0复制到4.0
+
+* 主库写，从库读
+
+![MySQ复制如何工作](./screenshots/mysql_copy.png  "MySQL复制如何工作")
+
+### 配置复制
+
+* 创建复制账号
+    GRANT REPLICATION SLAVE, REPLICATION CLIENT ON *.*
+    TO repl@'192.168.0.%' IDENTIFIED BY 'password'
+
+  主库与从库都创建该账号
