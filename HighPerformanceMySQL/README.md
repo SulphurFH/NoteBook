@@ -637,3 +637,33 @@ which mysqld
     TO repl@'192.168.0.%' IDENTIFIED BY 'password'
 
   主库与从库都创建该账号
+
+* 配置主库和备库
+    SHOW MASTER STATUS检查主库是否生成二进制日志文件
+
+* 启动复制
+    使用CHANGE MASTER TO语句，完全替代修改mycnf，并且允许以后指向别的主库时无需重启备库
+    SHOW SLAVE STATUS检查复制是否正确执行(Slave_IO_State/Seconds_Behind_Master)
+    START SLAVE开始复制
+
+* 从另一个服务器开始复制（以上的情况都是两台新服务器）
+
+* 推荐的复制配置
+    sync_binlog = 1
+    开启此选项，每次在事务提交前会将二进制日志同步到磁盘上
+    InnoDB墙裂推荐
+    innodb_flush_logs_at_trx_commit
+    innodb_support_xa=1
+    innodb_safe_binlog
+
+    明确指明二进制日志的名字和路径，保证在所有服务器上是一致的
+    log_bin=/var/lib/mysql/mysql-bin
+
+    备库推荐一下，为中继日志指定绝对路径
+    relay_log=/path/to/logs/relay-bin
+    skip_slave_start
+    read_only(阻止大部分用户更改非临时表)
+
+    sync_master_info = 1
+    sync_relay_log = 1
+    sync_relay_log_info = 1
