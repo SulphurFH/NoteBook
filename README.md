@@ -14,6 +14,7 @@
 * [HighPerformanceMySQL](https://github.com/SulphurFH/NoteBook/tree/master/HighPerformanceMySQL) - HighPerformanceMySQL
 * [Interview](https://github.com/SulphurFH/NoteBook/tree/master/Interview) - 面试总结
 * [Python_Design_Patterns](https://github.com/SulphurFH/NoteBook/tree/master/Python_Design_Patterns) - Python设计模式
+* [Redis](https://github.com/SulphurFH/NoteBook/tree/master/Redis) - Redis总结
 * [Docker](https://github.com/SulphurFH/NoteBook/blob/master/Docker.md) - Docker
 * [MongoDB](https://github.com/SulphurFH/NoteBook/blob/master/MongoDB.md) - MongoDB总结
 * [PostgreSQL](https://github.com/SulphurFH/NoteBook/blob/master/PostgreSQL.md) - PostgreSQL总结
