@@ -13,3 +13,92 @@
 * 空间预分配：用于字符串增加, SDS修改后的len<1MB，设置free=len，buf=len+free+1; len>1MB, free=1MB, buf=len+1MB(free)+1byte
 
 * 惰性空间释放：用于字符串减少，修改了len与free之后，buf不会释放出多余的字节空间，为将来字符串增加做优化
+
+## 链表
+
+Python实现（个人仿照书中c语言实例编写）
+
+```
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+
+
+class LinkedList:
+    def __init__(self):
+        self.head = None
+        self.tail = None
+        self.length = 0
+
+    def is_empty(self):
+        return self.head is None
+
+    def append(self, data):
+        node = Node(data)
+        if self.head is None:
+            self.head = node
+            self.tail = node
+        else:
+            self.tail.next = node
+            self.tail = node
+        self.length += 1
+
+    def insert(self, idx, value):
+        cur = self.head
+        cur_idx = 0
+        if cur is None:
+            raise Exception('The list is an empty list')
+        while cur_idx < idx - 1:
+            cur = cur.next
+            if cur is None:
+                raise Exception('list length less than index')
+            cur_idx += 1
+        node = Node(value)
+        node.next = cur.next
+        cur.next = node
+        if node.next is None:
+            self.tail = node
+        self.length += 1
+
+    def remove(self, idx):
+        cur = self.head
+        cur_idx = 0
+        if self.head is None:
+            raise Exception('The list is an empty list')
+        while cur_idx < idx - 1:
+            cur = cur.next
+            if cur is None:
+                raise Exception('list length less than index')
+            cur_idx += 1
+        if idx == 0:
+            self.head = cur.next
+            cur = cur.next
+            return
+        if self.head is self.tail:
+            self.head = None
+            self.tail = None
+            return
+        cur.next = cur.next.next
+        if cur.next is None:
+            self.tail = cur
+
+    def search(self, item):
+        current = self.head
+        found = False
+        while current is not None and not found:
+            if current.data == item:
+                found = True
+            else:
+                current = current.next
+        return found
+```
+
+
+### Redis链表特性
+
+* 双端，链表节点带有prev和next指针，获得某个节点前置节点和后置节点的复杂度都是O(1)
+
+* 无环，表头的prev指针为NULL，表尾的next也为NULL
+
+* 带表头指针和表尾指针，
