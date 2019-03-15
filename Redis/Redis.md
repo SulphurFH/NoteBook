@@ -113,3 +113,33 @@ class LinkedList:
 Redis字典是由哈希表实现的，一个哈希表里面有多个哈希节点，每个哈希表节点就保存了字典的一个键值对
 
 ### 哈希表
+
+
+```
+typedef struct dict {
+    dictType *type;     //类型特定函数
+    void *privdata;     //私有数据
+    dictht ht[2];       //哈希表
+    int rehashdx;      //rehash 索引,当 rehash 不在进行时,值为-1
+} dict;
+
+typedef struct dictht {
+    dictEntry **table;      //哈希表数组
+    unsigned long size;     //哈希表大小
+    unsigned long sizemask; //用于计算索引值,
+                            //总是等于 size - 1
+    unsigned long used;     //哈希表已有节点数量
+}  dictht;
+
+typedef struct dictEntry {
+    void *key;          //键
+    union {             //值
+        void *val;
+        uint_64 u64;
+        int64_t s64;
+    } v;                    
+    sturct dictEntry *next; //指向下个哈希表节点,形成链表
+} dictEntry;
+```
+
+![普通状态(不是在rehash状态)下的字典](./screenshots/redis-dict.png  "普通状态(不是在rehash状态)下的字典")
