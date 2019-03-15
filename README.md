@@ -4,10 +4,6 @@
 
 日常工作中的笔记
 
-## 管理界面
-
-*扩展管理界面，增加或增强基功能特性的相关包。*
-
 * [Algorithms](https://github.com/SulphurFH/NoteBook/tree/master/Algorithms) - 算法总结
 * [Go](https://github.com/SulphurFH/NoteBook/tree/master/Go) - golang
 * [Hadoop](https://github.com/SulphurFH/NoteBook/tree/master/Hadoop) - Hadoop
