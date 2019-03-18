@@ -112,7 +112,7 @@ class LinkedList:
 
 Redis字典是由哈希表实现的，一个哈希表里面有多个哈希节点，每个哈希表节点就保存了字典的一个键值对
 
-### 哈希表
+### 字典实现
 
 
 ```
@@ -137,9 +137,26 @@ typedef struct dictEntry {
         void *val;
         uint_64 u64;
         int64_t s64;
-    } v;                    
+    } v;
     sturct dictEntry *next; //指向下个哈希表节点,形成链表
 } dictEntry;
 ```
 
 ![普通状态(不是在rehash状态)下的字典](./screenshots/redis-dict.png  "普通状态(不是在rehash状态)下的字典")
+
+### 哈希算法
+
+将一个新的键值存放入字典当中的时候，根据键计算出哈希值和索引值，再根据索引值，将包含新键值对的哈希表节点放入哈希表数组
+的指定索引上
+
+
+```
+hash = dict -> type -> hashFunction(key);
+index = hash & dict -> ht[x].sizemask;
+```
+
+### 解决键冲突
+
+键冲突：当有两个或者更多键被分配到哈希表数组的同一个索引上
+
+解决：每个哈希表节点都有一个next指针，通过next将哈希表节点组成单向链表，程序将新节点添加到链表的表头位置（O(1)）
