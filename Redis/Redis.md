@@ -175,3 +175,23 @@ index = hash & dict -> ht[x].sizemask;
 2. ht[0]中所有键值对rehash到ht[1]上，重新计算键的哈希值和索引值（哈希算法）
 
 3. ht[0]全部迁移到ht[1]后，ht[0]为空表，释放ht[0]，将ht[1]设置为ht[0]，并在ht[1]创建新的空哈希表
+
+### 哈希表的扩展与收缩
+
+1. 服务器没有执行BGSAVE/BGREWRITEAOF命令，并且哈希表的负载因子大于等于1
+
+2. 服务器目前正在执行BGSAVE/BGREWRITEAOF命令，并且哈希表的负载因子大于等于5
+
+load_factor = ht[0].used / ht[0].size
+
+哈希因子小鱼0.1时，自动进行收缩
+
+### 渐进式Rehash
+
+1. 为ht[1]分配空间，让字典同时持有ht[0],ht[1]
+
+2. 字典维护rehashidx，0表示rehash开始(每转移一个键值对，rehashidx += 1, 最后转移完毕设置为-1，等待下一次rehash)
+
+3. rehash期间，字典的delete，find，update会在两个哈希表上进行
+
+4. 渐进式rehash期间，新增字典的键值对一律被保存在ht[1]
