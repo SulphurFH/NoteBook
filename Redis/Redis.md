@@ -201,6 +201,45 @@ load_factor = ht[0].used / ht[0].size
 
 Redis中跳跃表的应用：实现有序集合键，集群节点中用作内部数据结构
 
+```
+typedef struct zskiplist {
+
+    // 头节点，尾节点
+    struct zskiplistNode *header, *tail;
+
+    // 节点数量
+    unsigned long length;
+
+    // 目前表内节点的最大层数
+    int level;
+
+} zskiplist;
+
+typedef struct zskiplistNode {
+
+    // member 对象
+    robj *obj;
+
+    // 分值
+    double score;
+
+    // 后退指针
+    struct zskiplistNode *backward;
+
+    // 层
+    struct zskiplistLevel {
+
+        // 前进指针
+        struct zskiplistNode *forward;
+
+        // 这个层跨越的节点数量
+        unsigned int span;
+
+    } level[];
+
+} zskiplistNode;
+```
+
 ### 跳跃表的实现
 
 zskiplist结构：
@@ -212,3 +251,11 @@ zskiplist结构：
 * level：记录目前跳跃表内层数最大的那个节点的层数（expect表头节点）
 
 * length：记录跳跃表的长度，即跳跃表目前包含节点的数量（expect表头节点）
+
+* 层（level）: zskiplistNode的每个层，包含forward指针和span跨度
+
+* backward: 节点中个的BW表示标记几点的后退指针，用于表尾想表头遍历时使用
+
+* 分值(score)：节点按各自保存的分值从小打到排序
+
+* 成员对象(obj)：节点所保存的成员对象
