@@ -259,3 +259,39 @@ zskiplist结构：
 * 分值(score)：节点按各自保存的分值从小打到排序
 
 * 成员对象(obj)：节点所保存的成员对象
+
+![遍历整个跳跃表](./screenshots/redis-zskiplist.png  "遍历整个跳跃表")
+
+通过header和tail指针，程序定位表头节点和表尾节点的复杂度为O(1)
+
+
+## 整数集合
+
+集合键的底层实现之一（当集合只包含整数值元素并且元素数量不多时）
+
+```
+typedef struct intset {
+
+    // 编码方式
+    unint32_t encoding;
+
+    // 集合包含的元素数量
+    unint32_t length;
+
+    // 保存元素的数组
+    int8_t contents[];
+
+} intset;
+```
+
+* contents数组是整数集合的底层实现，整数集合的每个元素都是contents数组的一个数据项（item），并且从小大到排列
+* length = len(contents)
+* encoding决定contents真正类型
+
+### 升级
+
+新元素添加到intset中，并且新元素的类型比intset所有元素的类型都要长，要先upgrade（复杂度O(N)）
+
+1) 根据新元素类型扩展intset整数集合底层数组的空间大小
+2) 底层数组所有元素转换成新元素相同的类型，转换过程需要位置底层数组的有序性质不变（首先移动后面的元素）
+3) 新元素添加到底层数组
