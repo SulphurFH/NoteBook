@@ -340,10 +340,51 @@ Redis新建键值对时，会创建至少两个对象（键对象，值对象）
 typedef struct redisObject {
     // 类型
     unsigned type:4;
-    // 编码
+    // 编码（使用什么数据结构）
     unsigned encoding:4;
     // 指向底层实现数据结构的指针
     void *ptr;
     // ...
 } robj;
+```
+
+键总是一个字符串对象，而值则可以使字符串对象，列表对象，哈希对象，集合对象或者有序集合对象的其中一种（type命令查看类型）
+
+```
+/* Objects encoding. Some kind of objects like Strings and Hashes can be
+ * internally represented in multiple ways. The 'encoding' field of the object
+ * is set to one of this fields for this object. 
+ */
+#define OBJ_ENCODING_INT      /* Encoded as integer */ 整数
+#define OBJ_ENCODING_RAW     /* Raw representation */ 简单动态字符串
+#define OBJ_ENCODING_EMBSTR  /* Embedded sds string encoding */ embstr编码的简单动态字符串
+#define OBJ_ENCODING_HT       /* Encoded as hash table */ 字典
+#define OBJ_ENCODING_ZIPLIST  /* Encoded as ziplist */ 压缩列表
+#define OBJ_ENCODING_LINKEDLIST  /* Encoded as linked list of ziplists */ 双端列表
+#define OBJ_ENCODING_INTSET   /* Encoded as intset */ 整数集合
+#define OBJ_ENCODING_SKIPLIST   /* Encoded as skiplist */ 跳跃表
+```
+
+不同类型和编码的对象
+
+|类型|编码|对象|
+|:---- |:---- |---- |
+|REDIS_STRING|REDIS_ENCODING_INT|整数值实现的字符串对象|
+|REDIS_STRING|REDIS_ENCODING_EMBSTR|embstr编码的SDS实现的字符串对象|
+|REDIS_STRING|REDIS_ENCODING_RAW|SDS实现的字符串对象|
+|REDIS_LIST|REDIS_ENCODING_ZIPLIST|压缩列表实现的列表对象|
+|REDIS_LIST|REDIS_ENCODING_LINKEDLIST|双端列表实现的列表对象|
+|REDIS_HASH|REDIS_ENCODING_ZIPLIST|压缩列表实现的哈希对象|
+|REDIS_HASH|REDIS_ENCODING_HT|字典实现哈希对象|
+|REDIS_SET|REDIS_ENCODING_INTSET|整数集合实现的集合对象|
+|REDIS_SET|REDIS_ENCODING_HT|字典实现的集合对象|
+|REDIS_ZSET|REDIS_ENCODING_ZIPLIST|压缩列表实现的有序集合对象|
+|REDIS_ZSET|REDIS_ENCODING_SKIPLIST|跳跃表和字典实现的有序集合对象|
+
+```
+reids > SET msg "hello world"
+OK
+
+redis > OBJECT ENCODING msg
+"embstr"
 ```
