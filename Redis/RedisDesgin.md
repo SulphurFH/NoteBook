@@ -388,3 +388,35 @@ OK
 redis > OBJECT ENCODING msg
 "embstr"
 ```
+
+### 7.2 字符串对象
+
+字符串对象的编码可以是int，raw或者embstr
+
+embstr编码的字符串对象在执行命令时，产生的效果和raw编码的字符串对象执行命令时产生的效果是相同的
+
+使用embstr的优点：
+
+* 创建embstr字符串所需的内存分配次数从raw编码的两次降低为一次
+* 释放embstr编码的字符串对象只需要调用一次内存释放函数
+* embstr编码的字符串对象数据都保存在一块连续的内存里，可以更好地利用缓存
+
+### 7.2.1 编码转换
+
+int编码的字符串，使用一些命令使这个对象不再是整数值，而是一个字符串值，编码会从int变为raw
+
+```
+redis > SET number 10086
+OK
+
+redis > OBJECT ENCODING number
+"int"
+
+redis > APPEND number " is a good number!"
+(integer) 23
+
+redis > OBJECT ENCODING number
+"raw"
+```
+
+embstr编码的字符串无任何相应的修改程序（只有int和raw有），所以对embstr做修改时，它会转换为raw，然后在执行修改命令，所以embstr编码的字符串在执行修改命令后，总会变成raw编码的字符串对象
