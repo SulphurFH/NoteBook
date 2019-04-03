@@ -420,3 +420,38 @@ redis > OBJECT ENCODING number
 ```
 
 embstr编码的字符串无任何相应的修改程序（只有int和raw有），所以对embstr做修改时，它会转换为raw，然后在执行修改命令，所以embstr编码的字符串在执行修改命令后，总会变成raw编码的字符串对象
+
+
+### 7.3 列表对象
+
+列表对象的编码可以是ziplist或者linkedlist
+
+使用ziplist的条件（必须都满足以下两个条件）：
+
+* 列表对象保存的所有字符串元素的长度都小于64字节
+* 列表对象保存的元素数量小于512个
+* 可以通过list-max-ziplist-value和list-max-ziplist-entries修改上限
+
+### 7.4 哈希对象
+
+哈希对象的编码可以是ziplist或者hashtable
+
+使用ziplist
+
+```
+redis > HSET profile name "Tom"
+(integer) 1
+
+redis > HSET profile age 25
+(integer) 1
+
+redis > HSET profile career "Programmer"
+(integer) 1
+```
+
+| zlbytes | zltail | zllen | "name" | "Tom" | "age" | 25 | "career" | "Programmer" | zlend |
+
+使用hashtable
+
+* 字典的每个键都是一个字符串对象，对象中保存了键值对的键
+* 字典的每个值都是一个字符串对象，对象中保存了键值对的值
