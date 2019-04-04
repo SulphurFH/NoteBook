@@ -455,3 +455,33 @@ redis > HSET profile career "Programmer"
 
 * 字典的每个键都是一个字符串对象，对象中保存了键值对的键
 * 字典的每个值都是一个字符串对象，对象中保存了键值对的值
+
+#### 7.4.1 编码转换
+
+哈希对象同时满足以下两个条件时，使用ziplist编码
+
+* 哈希对象保存的所有键值对的键和值的字符串长度都小于64字节
+* 哈希对象保存的键值对数量小于512
+* * 可以通过hash-max-ziplist-value和hash-max-ziplist-entries修改上限
+
+### 7.5 集合对象
+
+集合对象的编码可以是intset或者hashtable
+
+![intset和hashtable实现的集合对象](./screenshots/redis-set.png  "intset和hashtable实现的集合对象")
+
+hashtable实现集合对象时，字典的每一个键都是一个字符串对象，每个字符串包含了一个集合对象，字典的值全部设为NULL
+
+#### 7.5.1 编码转换
+
+集合对象同时满足以下两个条件时，使用intset编码
+
+* 集合对象保存的所有元素都是整数值
+* 集合对象保存的元素数量不超过512
+* 可以通过set-max-intset-value修改上限
+
+### 7.6 有序集合对象
+
+有序集合对象编码可以是ziplist或者skiplist
+
+![ziplist实现的有序集合对象](./screenshots/redis-ziplist-zset.png  "ziplist实现的有序集合对象")
