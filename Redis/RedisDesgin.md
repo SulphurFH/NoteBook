@@ -484,7 +484,7 @@ hashtable实现集合对象时，字典的每一个键都是一个字符串对�
 
 有序集合对象编码可以是ziplist或者skiplist
 
-![ziplist实现的有序集合对象](./screenshots/redis-ziplist-zset.png  "ziplist实现的有序集合对象")
+![ziplist实现的有序集合对象](./screenshots/redis-ziplist-zset.png "ziplist实现的有序集合对象")
 
 有序集合需要同时使用skiplist和dict来实现
 
@@ -494,3 +494,63 @@ hashtable实现集合对象时，字典的每一个键都是一个字符串对�
 
 * 有序集合保存的元素数量小于128个
 * 有序集合保存的所有元素成员的长度都小于64字节
+* 可以通过zset-max-ziplist-entries和zset-max-ziplist-value修改
+
+### 7.7 类型检查与命令多态
+
+Redis对于操作键的命令分为两种类型
+
+1. 对任何类型的键执行:DEL,EXPIRE,RENAME,TYPE,OBJECT
+2. 只能针对特定类型的键执行，比如SET、GET、APPEND、STRLEN只能对字符串键执行
+
+#### 7.7.1 类型检查
+
+通过redisObject的type属性来判断
+
+![类型检查示例](./screenshots/type-check.png "类型检查示例")
+
+#### 7.7.2 命令多态
+
+![命令多态示例](./screenshots/polymorphic.png "命令多态示例")
+
+
+### 7.8 内存回收
+
+引用计数技术实现内存回收机制
+
+```
+typedef struct redisObject {
+    // 引用计数
+    int refcount;
+    // ...
+} robj;
+```
+
+### 7.9 对象共享
+
+引用计数属性还带有对象共享的作用（⚠️受限于CPU时间的限制，Redis只针对包含整数值的字符串对象进行共享）
+
+Redis中多个键共享同一个值对象需要执行以下两个步骤
+
+1. 将数据库的键的值指针指向一个现有的值对象
+2. 将被共享的值对象的引用计数+1
+
+所以值对象相同时，共享对象机制对于节约内存非常有帮助（目前Redis会在初始化服务器时创建1W个字符串对象，包含了从0-9999所有整数值）
+
+不止字符串键可以使用，在数据结构中嵌套了字符串对象的对象（linkedlist编码的列表对象、hashtable编码的哈希对象、hashtable编码的集合对象，zset编码的有序集合对象）都可以使用共享对象
+
+### 7.10 对象的空转时长
+
+记录对象最后一次被命令访问的时间
+
+```
+typedef struct redisObject {
+    // ...
+    unsigned lru:22;
+    // ...
+} robj;
+```
+
+OBJECT IDLETIME可以打印出给定键的空转时长，OBJECT IDLETIME不会修改对象的lru属性
+
+通过maxmemory选项可以将空转时长较高的部分键优先被服务器释放，回收内存
