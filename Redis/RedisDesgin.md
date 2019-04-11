@@ -554,3 +554,48 @@ typedef struct redisObject {
 OBJECT IDLETIME可以打印出给定键的空转时长，OBJECT IDLETIME不会修改对象的lru属性
 
 通过maxmemory选项可以将空转时长较高的部分键优先被服务器释放，回收内存
+
+
+## 8 数据库
+
+### 8.1 服务器中的数据库
+
+```
+struct redisServer {
+    // ...
+    // 一个数组，保存着服务器中所有的数据库
+    redisDb *db;
+    // 服务器的数据库数量
+    int dbnum;
+    // ...
+} robj;
+```
+
+dbnum由服务器配置的database决定，默认是16
+
+### 8.2 切换数据库
+
+```
+typedef struct redisClient {
+    // ...
+    redisDb *db;
+    // ...
+} redisClient;
+```
+
+redisClient.db指针指向redisServer.db数组中的一个元素（客户端的目标数据库）
+
+![切换数据库](./screenshots/redisServer-Client.png "切换数据库")
+
+⚠️注意多数据库操作时选择正确的数据库
+
+### 8.3 数据库的键空间
+
+```
+typedef struct redisDb {
+    // ...
+    // 数据库键空间，保存着数据库中所有键值对
+    dict *dict;
+    // ...
+} redisDb;
+```
