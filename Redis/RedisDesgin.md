@@ -1,6 +1,6 @@
 # Redis设计与实现
 
-## 1. 简单动态字符串（SDS）
+## 1 简单动态字符串（SDS）
 
 ### 1.1 SDS区别C字符串
 
@@ -14,7 +14,7 @@
 
 * 惰性空间释放：用于字符串减少，修改了len与free之后，buf不会释放出多余的字节空间，为将来字符串增加做优化
 
-## 2. 链表
+## 2 链表
 
 Python实现（个人仿照书中c语言实例编写）
 
@@ -108,7 +108,7 @@ class LinkedList:
 * 链表可以用于保存不同类型的值
 
 
-## 3. 字典(Dict)
+## 3 字典(Dict)
 
 Redis字典是由哈希表实现的，一个哈希表里面有多个哈希节点，每个哈希表节点就保存了字典的一个键值对
 
@@ -197,7 +197,7 @@ load_factor = ht[0].used / ht[0].size
 4. 渐进式rehash期间，新增字典的键值对一律被保存在ht[1]
 
 
-## 4. 跳跃表(zskiplist)
+## 4 跳跃表(zskiplist)
 
 Redis中跳跃表的应用：实现有序集合键，集群节点中用作内部数据结构
 
@@ -265,7 +265,7 @@ zskiplist结构：
 通过header和tail指针，程序定位表头节点和表尾节点的复杂度为O(1)
 
 
-## 5. 整数集合(intset)
+## 5 整数集合(intset)
 
 集合键的底层实现之一（当集合只包含整数值元素并且元素数量不多时）
 
@@ -301,7 +301,7 @@ typedef struct intset {
 整数集合不支持降级操作
 
 
-## 6. 压缩列表（ziplist）
+## 6 压缩列表（ziplist）
 
 ziplist是列表键和哈希键的底层实现之一（包含少量列表项/键值对，并且每个列表项/键值对的键和值都是小整数值或者短字符串）
 
@@ -679,3 +679,142 @@ typedef struct redisDb {
 #### 8.6.1 惰性删除策略的实现
 
 ![惰性删除](./screenshots/redis-inert-delete.png "惰性删除")
+
+#### 8.6.2 定时删除策略的实现
+
+通过activeExpireCycle函数来删除过期键
+
+1. 函数每次运行，都会从一定数量的数据库取出一定数量的随机键进行检查并删除
+2. 全局变量current_db会记录activeExpireCycle检查进度
+3. 所有数据库都被检查一遍时，current_db重置为0，开始下一轮检查
+
+### 8.7 AOF、RDB和复制功能对过期键处理
+
+AOF和RDB是两种不同级别的持久化方式
+
+#### 8.7.1 生成RDB文件
+
+同SAVE、BGSAVE创建新的RDB文件时，会对数据库中的键检查，已过期的键不会被保存到新创建的RDB文件中
+
+#### 8.7.2 载入RDB文件
+
+1. 服务器以主服务器运行，载入RDB文件时会对文件中保存键做检查，未过期的载入，过期的忽略
+2. 服务器以从服务器运行，全部载入，主从服务器做同步的时候，从数据库会被清空
+
+#### 8.7.3 AOF文件写入
+
+当过期键被惰性删除或者定期删除之后，会让AOF追加（append）一条DEL命令
+
+#### 8.7.4 AOF重写
+
+与生成RDB文件类似，在重写过程中，会对数据库中的键进行检查，已过期的键不会被保存到重写后的AOF文件中
+
+#### 8.7.5 复制
+
+复制模试下，从服务器的过期键删除动作由主服务器控制：
+
+1. 主服务器在删除一个过期键之后，会显式地向从服务器发送DEL命令
+2. 从服务器执行client发来的读命令，碰到过期键也不会删除，而是正常返回
+3. 只有从服务器接口主服务器发来的DEL命令才会将过期键删除
+
+## 9 RDB持久化
+
+### 9.1 RDB文件创建与载入
+
+生成RDB文件的命令：SAVE、BGSAVE
+
+SAVE会阻塞Redis服务器进程，BGSAVE会派生一个子进程，然后有子进程创建RDB，服务器进程继续处理命令请求
+
+Redis会在服务启动的时候，检测到RDB文件的存在，自动载入RDB文件
+
+* 如果启动了AOF，优先会使用AOF还原数据库状态（AOF更新频率通常比RDB高）
+* 只有AOF持久化功能关闭的时候，服务器才会使用RDB文件还原数据库状态
+
+BGSAVE命令执行时服务器的状态
+
+1. BGSAVE执行期间，SAVE命令会被服务器拒绝
+2. BGSAVE执行期间，BGSAVE命令会被服务器拒绝
+3. BGSAVE执行期间，BGREWRITEAOF命令会被延迟到BGSAVE执行完毕之后执行
+4. BGREWRITEAOF执行期间，BGSAVE命令会被延迟到BGREWRITEAOF执行完毕之后执行
+
+RDB文件载入时，服务器会处于阻塞状态
+
+### 9.2 自动间隔性保存
+
+```
+struct redisServer {
+    // ...
+    // 记录了保存条件的数组
+    struct saveparam *saveparams;
+    // ...
+}
+
+struct saveparam {
+    // 秒数
+    time_t seconds;
+
+    // 修改数
+    int changes
+}
+```
+save选项默认设置条件
+
+```
+save 900 1
+save 300 10
+save 60 10000
+```
+
+满足一个就会执行BGSAVE
+
+```
+struct redisServer {
+    // ...
+    // 成功执行SAVE/BGSAVE后服务器状态进行了多少次修改
+    long long dirty;
+    // 上一次执行保存的时间
+    time_t lastsave;
+    // ...
+}
+```
+
+Redis服务器周期性操作函数serverCron默认每隔100毫秒执行一次检查save选项，满足任意一个条件就会执行BGSAVE命令
+
+### 9.3 RDB文件结构
+
+|   REDIS   | db_version | database | EOF | check_sum |
+| ---------- | --- | --- | --- | --- |
+| 检查是否为RDB文件 | 数据库版本 | 数据 | 结束标志 | 校验值 |
+
+非空的database结构为
+
+|   SELECTDB   | db_number | key_value_pairs |
+| ---------- | --- | --- |
+| 准备读取db_number | 数据库号码 | 数据库所有键值对数据 |
+
+key_value_pairs结构为
+
+|   EXPIRETIME_MS（带过期的独有）   | ms（带过期的独有） | TYPE | key | value | 
+| ---------- | --- | --- | --- | --- |
+| 准备读取毫秒为单位的过期时间 | UNIX毫秒时间戳 | value的类型 | 键值对键对象 | 键值对值对象 |
+
+## 10 AOF持久化
+
+AOF是通过保存Redis服务器所执行的写命令来记录数据库状态（比RDB文件大）
+
+## 10.1 AOF持久化的实现
+
+AOF持续化功能实现可分为命令追加，文件写入，文件同步三个步骤
+
+```
+struct redisServer {
+    // ...
+    // AOF缓冲区
+    sds aof_buf;
+    // ...
+}
+```
+
+写命令后，会将写命令将协议格式追到服务器状态的aof_buf缓冲区末尾
+
+服务器每次结束一个事件循环之前，都会调用flushAppendOnlyFile，将aof_buf缓冲区的内容写入和保存到AOF文件中
