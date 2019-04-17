@@ -794,7 +794,7 @@ Redis服务器周期性操作函数serverCron默认每隔100毫秒执行一次�
 
 key_value_pairs结构为
 
-|   EXPIRETIME_MS（带过期的独有）   | ms（带过期的独有） | TYPE | key | value | 
+| EXPIRETIME_MS（带过期的独有） | ms（带过期的独有） | TYPE | key | value | 
 | ---------- | --- | --- | --- | --- |
 | 准备读取毫秒为单位的过期时间 | UNIX毫秒时间戳 | value的类型 | 键值对键对象 | 键值对值对象 |
 
@@ -802,7 +802,7 @@ key_value_pairs结构为
 
 AOF是通过保存Redis服务器所执行的写命令来记录数据库状态（比RDB文件大）
 
-## 10.1 AOF持久化的实现
+### 10.1 AOF持久化的实现
 
 AOF持续化功能实现可分为命令追加，文件写入，文件同步三个步骤
 
@@ -817,4 +817,26 @@ struct redisServer {
 
 写命令后，会将写命令将协议格式追到服务器状态的aof_buf缓冲区末尾
 
-服务器每次结束一个事件循环之前，都会调用flushAppendOnlyFile，将aof_buf缓冲区的内容写入和保存到AOF文件中
+服务器每次结束一个事件循环之前，都会调用flushAppendOnlyFile，将aof_buf缓冲区的内容写入和保存到AOF文件中，flushAppendOnlyFile由服务器配置的appendfsync决定（always、everysec-默认、no）
+
+### 10.2 AOF文件的载入与数据还原
+
+![AOF文件载入过程](./screenshots/redis-aof-load.png "AOF文件载入过程")
+
+### 10.3 AOF重写
+
+解决AOF文件体积膨胀的问题
+
+并不会对现有的AOF文件进行任何读取、分析或者写入，而是通过读取服务器当前的数据库状态来实现
+
+AOF为了保证服务器的运行采用后台写入，但是在进行AOF重写的期间，服务器还在处理其他命令，新命令可能对数据库状态做修改
+
+Redis采用AOF重写缓冲区来解决
+
+![AOF重写缓冲区](./screenshots/redis-aof-cache.png "AOF重写缓冲区")
+
+## 11 事件
+
+Redis是事件驱动程序，服务器处理以下两类事件：
+1. 文件事件
+2. 事件事件
