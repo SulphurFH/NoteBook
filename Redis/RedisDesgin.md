@@ -857,3 +857,48 @@ serverCron主要工作：
 时间事件的实际处理时间通常会逼设定的到达时间晚一些
 
 ## 12 客户端
+
+### 12.1 客户端的属性
+
+```
+struct redisClient {
+    // ...
+    int fd;
+    robj *name;
+    // 记录客户端的角色
+    int flags;
+    // 输入缓冲区：保护客户端发送的命令请求
+    sds querybuf;
+    // 命令与命令参数(argv是一个数组，argc记录表argv数组长度)
+    robj **argv;
+    int argc;
+    // 命令的实现函数
+    struct redisCommand *cmd;
+    // 每个客户端有两个缓冲区可用，一个大小固定，一个大小可变
+    // 固定大小输出缓冲区
+    char buf[REDIS_REPLAY_CHUNK_BYTES]; //常量目前默认值是16*1024即16kb
+    int bufpos;
+    // 可变大小的输出缓冲区
+    list *reply;
+    // 身份验证
+    int authenticated;
+    // 时间属性
+    time_t ctime;
+    time_t lastinteraction;
+    time_t obuf_soft_limit_reached_time;
+    // ...
+} redisClient;
+```
+
+伪客户端的fd属性为-1（载入AOF文件还原数据库状态；Lua脚本执行Redis命令）
+
+普通客户端fd属性值大于-1的整数
+
+## 13 服务器
+
+### 13.1 命令请求的执行过程
+
+1. 客户端向服务器发送命令请求SET KEY VALUE
+2. 服务器接受并处理客户端发来的命令，在数据库中进行设置操作，并产生命令回复OK
+3. 服务器将命令回复OK发送给客户端
+4. 客户端接收服务器返回的命令回复OK，并将回复打印给用户
