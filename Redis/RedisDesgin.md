@@ -975,5 +975,11 @@ PSYNC具有完整重同步（初次复制）和部分重同步（断线后重复
 以下三个部分构成：
 
 1. 主服务器的复制偏移量和从服务器的复制偏移量（offset，主要是每次传播N个字节数）
-2. 主服务器的复制积压缓冲区
+2. 主服务器的复制积压缓冲区（fixed—size 1MB FIFO）
+   
+   repl-backlong-size的大小一般设置为2 * second * write_size_per_second
+
+   second：从服务器从断线后重新连接主服务器所需的平均时间
+
+   write_size_per_second: 主服务器平均每秒产生的写命令数据量
 3. 服务器的运行ID
