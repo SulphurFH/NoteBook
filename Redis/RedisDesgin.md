@@ -1003,3 +1003,18 @@ PSYNC具有完整重同步（初次复制）和部分重同步（断线后重复
 5. 发送端口信息
 6. 同步（主服务器也会成为从服务器的客户端：完整重同步操作、部分重同步操作）
 7. 命令传播
+
+### 14.6 心跳检测
+
+命令传播阶段，从服务器默认会每秒1次的频率向主服务器发送命令：REPLCONF ACK <replication_offset(从服务器当前偏移量)>
+
+三个作用：
+1. 检测主从服务器的网络连接状态
+2. 辅助实现min-slaves选项
+3. 检测命令丢失
+
+## 15. Sentinel
+
+![Sentinel](./screenshots/sentinel-1.png "Sentinel")
+
+![Sentinel](./screenshots/sentinel-2.png "Sentinel")
