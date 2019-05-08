@@ -1018,3 +1018,16 @@ PSYNC具有完整重同步（初次复制）和部分重同步（断线后重复
 ![Sentinel](./screenshots/sentinel-1.png "Sentinel")
 
 ![Sentinel](./screenshots/sentinel-2.png "Sentinel")
+
+主观下线时长：down-after-milliseconds
+
+多个Sentinel设置的主观下线时长可能不同
+
+客观下线：Sentinel将一个主服务器判断为主观下线后，再向监视主服务器的其他Sentinel询问，确认主服务器是否已经进入了下线状态
+
+
+## 15.1 故障转移
+
+1. 已下线的主服务器下属所有的从服务器中挑选一个从服务器，转变为主服务器
+2. 已下线的主服务器下属的所有从服务器改为复制新的主服务器
+3. 已下线的主服务器设置为主服务器的从服务器
