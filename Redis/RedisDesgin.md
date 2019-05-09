@@ -1026,8 +1026,39 @@ PSYNC具有完整重同步（初次复制）和部分重同步（断线后重复
 客观下线：Sentinel将一个主服务器判断为主观下线后，再向监视主服务器的其他Sentinel询问，确认主服务器是否已经进入了下线状态
 
 
-## 15.1 故障转移
+### 15.1 故障转移
 
 1. 已下线的主服务器下属所有的从服务器中挑选一个从服务器，转变为主服务器
 2. 已下线的主服务器下属的所有从服务器改为复制新的主服务器
 3. 已下线的主服务器设置为主服务器的从服务器
+
+## 16. 集群
+
+Redis集群是Redis提供的分布式数据库方案，通过分片（sharding）进行数据共享，提供复制和故障迁移功能
+
+### 16.1 节点
+
+```
+CLUSTER MEET <IP> <PORT> # 连接各节点
+CLUSTER NODES # 显示集群节点信息
+```
+
+一个节点==一个运行在集群模式下的Redis服务器，cluster-enabled配置项决定是否开启服务器集群模式，节点会继续使用redisServer保存服务器状态，redisClient保存客户端状态，集群模式下用到的数据结构，节点保存在clusterNode（节点信息）、clusterLink（连接节点信息）、clusterState（当前节点视角下，集群所处状态）中
+
+CLUSTER MEET实现：
+
+1. NodeA为NodeB创建clusterNode，并添加到自己的clusterState.nodes字典中
+2. NodeA向NodeB发送MEET消息
+3. NodeB接受到MEET消息，NodeB为NodeA创建clusterNode，并添加到自己的clusterState.nodes字典中
+4. NodeB向NodeA发送PONG消息
+5. NodeA收到PONG消息，向NodeB发送PING消息
+6. NodeB接收到PING消息，完成握手
+
+### 16.2 槽指派
+
+集群整个数据库被分为16384个槽（slot），数据库的每个键都属于这16384个槽的其中一个，集群每个节点可以处理0-16384个槽，16384个槽都被节点处理时，集群属于上线状态，否则是下线状态
+
+```
+CLUSTER INFO # 查看节点信息
+CLUSTER ADDSLOTS <slot> [slot ....] # 分配槽，需要注意给那个Node分配，要用哪个Node连接
+```
