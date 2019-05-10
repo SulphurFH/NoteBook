@@ -1062,3 +1062,13 @@ CLUSTER MEET实现：
 CLUSTER INFO # 查看节点信息
 CLUSTER ADDSLOTS <slot> [slot ....] # 分配槽，需要注意给那个Node分配，要用哪个Node连接
 ```
+
+clusterNode结构的slots属性和numslot属性记录了节点负责处理哪些槽
+
+检查节点是否处理某个槽，或将某个槽指派给负责节点，复杂度为O(1)
+
+传播节点的槽指派信息（集群中每个节点都知道数据库的16384个槽分配给了哪些节点）
+
+clusterState结构中的slots数组记录了急群众所有16384个槽的指派信息，slots数组有16384项，每一项都指向clusterNode结构的指针，slots[i]指针指向NULL，表示未派给任何节点，获取某个槽被指派给了哪个节点的复杂度为O(1)
+
+⚠️ clusterState.slots数组记录了集群中所有槽的指派信息，clusterNode.slots数组只记录了clusterNode结构所代表的节点的槽指派信息
