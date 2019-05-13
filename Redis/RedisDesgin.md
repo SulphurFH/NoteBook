@@ -1072,3 +1072,10 @@ clusterNode结构的slots属性和numslot属性记录了节点负责处理哪些
 clusterState结构中的slots数组记录了急群众所有16384个槽的指派信息，slots数组有16384项，每一项都指向clusterNode结构的指针，slots[i]指针指向NULL，表示未派给任何节点，获取某个槽被指派给了哪个节点的复杂度为O(1)
 
 ⚠️ clusterState.slots数组记录了集群中所有槽的指派信息，clusterNode.slots数组只记录了clusterNode结构所代表的节点的槽指派信息
+
+![判断客户端是否需要转向](./screenshots/cluster-moved.png "判断客户端是否需要转向")
+
+```
+CLUSTER KEYSLOT # 查看一个给定键属于哪个槽
+MOVED <slot> <ip>:<port> # 指引客户端转向正在负责槽的节点，Redis单机模式下只会打印错误
+```
