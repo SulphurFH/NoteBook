@@ -1079,3 +1079,26 @@ clusterState结构中的slots数组记录了急群众所有16384个槽的指派�
 CLUSTER KEYSLOT # 查看一个给定键属于哪个槽
 MOVED <slot> <ip>:<port> # 指引客户端转向正在负责槽的节点，Redis单机模式下只会打印错误
 ```
+
+Redis集群可以online进行重新分片（redis-trib）
+
+```
+CLUSTER SETSLOT <slot> IMPORTING <source_id>
+CLUSRER SETSLOT <slot> MIGRATING <target_id>
+```
+
+![对槽slot进行重新分片的过程](./screenshots/re-split-slot.png "对槽slot进行重新分片的过程")
+
+![判断是否发送ask错误](./screenshots/resplit-ask.png "判断是否发送ask错误")
+
+### 16.3 复制与故障转移
+
+Redis集群分为主节点和从节点，主节点处理槽，从节点用于复制某个主节点，当主节点下线时，替代下线主节点继续处理命令请求
+
+故障转移的执行步骤：
+
+1. 复制下线主节点的所有从节点里面，会有一个从节点被选中
+2. 被选中的从节点会执行SLAVEOF no one命令，成为主节点
+3. 新的主节点撤销所有对一下显得主节点的指派槽，并将这些槽全部指派给自己
+4. 新的主节点广播PONG消息，通知其他节点此节点变为主节点
+5. 新的主节点接受处理自己处理的槽
