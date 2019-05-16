@@ -13,6 +13,6 @@
 * [Redis](https://github.com/SulphurFH/NoteBook/tree/master/Redis) - Redis总结
 * [Docker](https://github.com/SulphurFH/NoteBook/blob/master/Docker.md) - Docker
 * [MongoDB](https://github.com/SulphurFH/NoteBook/blob/master/MongoDB.md) - MongoDB总结
-* * [MongoDB](https://github.com/SulphurFH/NoteBook/blob/master/RabbitMQ.md) - RabbitMQ总结
+* [RabbitMQ](https://github.com/SulphurFH/NoteBook/blob/master/RabbitMQ.md) - RabbitMQ总结
 * [PostgreSQL](https://github.com/SulphurFH/NoteBook/blob/master/PostgreSQL.md) - PostgreSQL总结
 * [Python](https://github.com/SulphurFH/NoteBook/blob/master/Python.md) - Python总结
