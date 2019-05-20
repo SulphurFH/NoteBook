@@ -31,3 +31,20 @@ HSETNX与HSET命令类似，如果字段存在，HSETNX将不执行任何操作
 ```
 HINCRBY key field increment
 ```
+
+## 列表
+
+列表向两端添加元素的时间复杂度为O(1)，对于从两端取某些数据速度非常快，但是访问索引只能循环遍历
+
+LLEN的复杂度为O(1)，Redis会直接读取现成的值
+
+LRANGE返回值包含最右边的元素
+
+
+```
+# 删除列表中前count个值为value的元素
+LREM key count value
+count > 0 从左边删除前count个值为value
+count < 0 从右边删除前count个值为value
+count = 0 删除所有值为value
+```
