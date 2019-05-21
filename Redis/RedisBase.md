@@ -48,3 +48,26 @@ count > 0 从左边删除前count个值为value
 count < 0 从右边删除前count个值为value
 count = 0 删除所有值为value
 ```
+
+使用LTRIM和LPUSH来限制列表中元素的数量
+
+```
+# 保留最近100条日志
+LPUSH logs $newLog
+LTRIM logs 0 99
+```
+
+多个队列传递数据可以使用RPOPLPUSH
+
+
+## 集合
+
+插入、删除、判断存在复杂度都是O(1)
+
+
+```
+SADD key member
+SREM key
+SMEMBERS key
+SISMEMBER key
+```
