@@ -70,4 +70,7 @@ SADD key member
 SREM key
 SMEMBERS key
 SISMEMBER key
+SDIFF
+SINTER
+SUNION
 ```
