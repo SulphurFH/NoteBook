@@ -73,4 +73,20 @@ SISMEMBER key
 SDIFF
 SINTER
 SUNION
+SCARD # 集合元素数量
+SPOP # 集合是无序的所以无法LPOP或者RPOP
+```
+
+```
+# 0 < count < SMEMBERS key 返回count个元素
+# count >= SMEMBERS key 返回key的所有元素
+# count < 0 返回|count|个key的元素，可能有重复
+SRANDMEMBER key [count]
+```
+
+## 有序集合
+
+```
+ZADD key score member
+ZSCORE key member
 ```
