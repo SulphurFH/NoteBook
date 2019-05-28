@@ -89,4 +89,17 @@ SRANDMEMBER key [count]
 ```
 ZADD key score member
 ZSCORE key member
+ZRANGE key start stop [WITHSCORES]
+ZRANGEBYSCORE key min max [WITHSCORES] [LIMIT offset count]
+ZREVRANGEBYSCORE的min和max参数是相反的
+```
+
+## 事务
+
+```
+# 如果命令语法错误，那么EXEC会返回错误，连语法正确的命令也不执行（开发时就要规避）
+# 运行错误会继续执行
+MULI
+COMMANDS
+EXEC
 ```
