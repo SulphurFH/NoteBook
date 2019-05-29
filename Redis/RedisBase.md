@@ -103,3 +103,28 @@ MULI
 COMMANDS
 EXEC
 ```
+
+WATCH命令监控一个或多个键，一旦被修改（删除），事务就不会被执行
+
+## 过期键
+
+PERSIST命令将键恢复成永久（成功清除过期时间返回1， 键不存在或键本来就是永久的返回0）
+
+场景1
+
+10分钟 100次
+
+伪代码
+
+```
+list_len = LLEN rate.limiting:id
+if list_len < 10:
+    LPUSH rate.limiting:id now()
+else:
+    time = LINDEX rate.limiting:id -1
+    if now() - time < 60:
+        print 超过限制
+    else:
+        LPUSH rate.limiting:id now()
+        LTRIM rate.limiting:id 0, 9
+```
