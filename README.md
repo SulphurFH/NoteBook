@@ -2,7 +2,7 @@
 
 ## 介绍
 
-日常工作中的笔记
+日常学习中的笔记
 
 * [Algorithms](https://github.com/SulphurFH/NoteBook/tree/master/Algorithms) - 算法总结
 * [Go](https://github.com/SulphurFH/NoteBook/tree/master/Go) - golang
@@ -16,3 +16,4 @@
 * [RabbitMQ](https://github.com/SulphurFH/NoteBook/blob/master/RabbitMQ.md) - RabbitMQ总结
 * [PostgreSQL](https://github.com/SulphurFH/NoteBook/blob/master/PostgreSQL.md) - PostgreSQL总结
 * [Python](https://github.com/SulphurFH/NoteBook/blob/master/Python.md) - Python总结
+* [Kubernetes](https://github.com/SulphurFH/NoteBook/blob/master/KubernetesInAction.md) - Kubernetes学习总结

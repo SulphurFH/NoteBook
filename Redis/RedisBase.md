@@ -128,3 +128,50 @@ else:
         LPUSH rate.limiting:id now()
         LTRIM rate.limiting:id 0, 9
 ```
+
+## 排序
+
+SORT支持对集合、列表、有序集合类型进行排序
+
+
+```
+SORT [BY pattern] key [LIMIT] [ASC|DESC] [ALPHA] [STORE]
+```
+
+```
+127.0.0.1:6379> LPUSH sortbylist 1 2 3 4 5
+(integer) 5
+127.0.0.1:6379> SET itemscore:1 100
+OK
+127.0.0.1:6379> SET itemscore:2 70
+OK
+127.0.0.1:6379> SET itemscore:3 270
+OK
+127.0.0.1:6379> SET itemscore:4 20
+127.0.0.1:6379> SORT sortbylist BY itemscore:* DESC
+1) "3"
+2) "1"
+3) "2"
+4) "4"
+5) "5"
+```
+
+"*"只能在"->"符号前面，后面的会被当做字段名本身
+
+STORE结合EXPIRE缓存排序结果
+
+```
+is_exist = EXISTS cache_sort
+if is_exist:
+    return LRANGE cache_sort 0, -1
+else:
+    sort_result = SORT some_list STORE cache_sort
+    EXPIRE cache_sort 600
+    return sort_result
+```
+
+SORT是Redis命令最复杂的之一，要注意几点
+
+1. 尽可能减少待排序键中元素的数量
+2. 使用LIMIT
+3. 尽量使用STORE
