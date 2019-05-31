@@ -47,3 +47,60 @@ kubectl create -f ***.yaml
 kubectl label pod kubia-manual creation_method=manual
 kubectl label pod kubia-manual-v2 env=debug --overwrite
 ```
+
+## 命名空间
+
+```
+kubectl create namespace custom-namespace
+```
+
+## 删除pod
+
+```
+kubectl delete pod pod-name1 pod-name2
+kubectl delete pod -l xxxx=xxxx
+```
+
+ReplicationController控制的pod，删除了会自己重建，所以要先删除rc
+
+
+## 查看k8s资源信息
+
+```
+kubectl explain
+```
+
+## Liveness Probe
+
+1. http探针
+2. TCP
+3. EXEC
+
+## 查看log
+
+```
+# 查看当前
+kubectl logs pod
+# 查看前一个（pod重启）
+kubectl logs pod --previous
+```
+
+## 查看描述
+
+```
+kubectl describe pod pod-name
+# 其中ExitCode表示退出码，137表示进程被外部信号终止，128+9（SIGKILL）， 143对应128+15（SIGTERM）
+```
+
+## 删除rc
+
+```
+# 设置--cascade=false不会删除rc管理的pod
+kubectl delete rc rc-name --cascade=false
+```
+
+RC会在之后的版本移除，改为ReplicationSets
+
+## DaemonSet
+
+负责运行系统服务（让节点上都有要运行的pod，如日志，资源监控）
