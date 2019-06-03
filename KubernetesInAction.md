@@ -108,3 +108,24 @@ RC会在之后的版本移除，改为ReplicationSets
 ## Job
 
 ## CronJob
+
+## Services
+
+```
+# 创建服务
+kubectl expose
+# 或者通过yaml创建
+kubectl create -f svc.yaml
+```
+
+```
+# -- 代表这kubectl命令的结束，后面的将是在pod内部执行的命令
+kubectl exec pod-name -- curl -s http://service:ip
+kubectl exec -it pod-name bash
+```
+
+## 服务发现
+
+1. 环境变量
+2. DNS
+3. FQDN
