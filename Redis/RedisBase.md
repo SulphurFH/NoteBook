@@ -175,3 +175,42 @@ SORT是Redis命令最复杂的之一，要注意几点
 1. 尽可能减少待排序键中元素的数量
 2. 使用LIMIT
 3. 尽量使用STORE
+
+## 消息队列
+
+```
+BRPOP queue 0
+
+# 优先级任务队列，key1有值先取key1
+BRPOP key1 [key2...]
+```
+
+发布订阅
+
+```
+SUBSCRIBE channel1.1
+PUBLISH channel1.1 hi
+```
+
+执行SUBSCRIBE命令的客户端会进入订阅状态，此状态下的客户端不能使用除SUBSCRIBE，UNSUBSCRIBE（不指定频道会取消所有订阅），PSUBSCRIBE，PUNSUBSCRIBE之外的命令
+
+```
+# channel.?*可以匹配channel1.1、channel1.10等
+PSUBSCRIBE channel.?*
+```
+
+## 管道
+
+redis-py
+
+```
+pipe = r.pipline(transaction=False)
+....
+result = pipe.execute()
+
+
+# 事务
+pipe = r.pipline()
+....
+result = pipe.execute()
+```

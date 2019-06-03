@@ -104,3 +104,7 @@ RC会在之后的版本移除，改为ReplicationSets
 ## DaemonSet
 
 负责运行系统服务（让节点上都有要运行的pod，如日志，资源监控）
+
+## Job
+
+## CronJob
