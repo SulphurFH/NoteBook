@@ -73,8 +73,8 @@ kubectl explain
 ## Liveness Probe
 
 1. http探针
-2. TCP
-3. EXEC
+2. TCP探针
+3. EXEC探针
 
 ## 查看log
 
@@ -129,3 +129,43 @@ kubectl exec -it pod-name bash
 1. 环境变量
 2. DNS
 3. FQDN
+
+## 连接集群外部服务
+
+endpoints
+
+endpoint对象需要与服务具有相同的名称，这样服务就可以具有像pod选择器那样的服务正常使用
+
+## 服务暴露给外部客户端
+
+1. NodePort
+2. LoadBalance
+3. Ingress
+
+```
+# 使用JSONPath获取所有节点IP
+kubectl get nodes -o jsonpath='{.item[*].status.addresses[?(@.type=="ExternalIP")].address}'
+```
+
+svc的spec -> externalTrafficPolicy:Local 可以防止不必要的网络跳数，但是可能会导致跨pod的负载分布不均匀
+
+## Ingress
+
+Ingress一般指向一个NodePort
+
+```
+# Ingress TLS
+kubectl create secret tls tls-secret --cert=tls.cert --key=tls.key
+kubectl edit ingress ingress-name
+
+tls:
+- hosts:
+    - hostname
+    secretName: tls-name
+```
+
+## Readiness Probe
+
+1. http探针
+2. TCP探针
+3. EXEC探针
