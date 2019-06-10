@@ -183,3 +183,9 @@ tls:
 ## 卷
  
  hostPath是持久性存储，新pod还可以发现上个pod保留的数据，但是要求必须和上一个pod在统一节点
+
+
+ ```
+ # 获得pod运行在哪个节点
+ kubectl get po -o wide
+ ```
