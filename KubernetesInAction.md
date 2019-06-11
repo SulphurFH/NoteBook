@@ -189,3 +189,5 @@ tls:
  # 获得pod运行在哪个节点
  kubectl get po -o wide
  ```
+
+ 持久卷和持久卷生命只能被统一命名空间的pod创建使用
