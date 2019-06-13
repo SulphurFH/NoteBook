@@ -95,3 +95,10 @@ docker run -d -p 3306:3306 -v /var/lib/docker/vfs/dir/mydata:/var/lib/mysql csph
 # 使用docker-compose重启容器
 sudo docker-compose -f etc/docker-compose-supervisor.yml down && sudo docker-compose -f etc/docker-compose-supervisor.yml up -d
 ```
+
+## ENTRYPOINT和CMD
+
+1. ENTRYPOINT定义容器启东市被调用的可执行程序
+2. CMD指定传递给ENTRYPOINT的参数
+
+这两条指令都支持shell和exec形式（区别在于命令是否在shell中被调用，shell进程往往是多余的，一般可以用exec）

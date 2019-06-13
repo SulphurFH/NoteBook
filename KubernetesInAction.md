@@ -195,3 +195,11 @@ tls:
  StorageClass
 
  动态配置的持久卷其容量和访问模式是在PVC中所要求的
+
+
+ ## 覆盖命令和参数
+
+|   Docker   | k8s |
+| ---------- | --- |
+| ENTRYPOINT | command |
+| CMD | args |
