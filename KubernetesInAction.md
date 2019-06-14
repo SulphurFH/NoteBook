@@ -203,3 +203,13 @@ tls:
 | ---------- | --- |
 | ENTRYPOINT | command |
 | CMD | args |
+
+
+可以为Pod的容器中设置环境变量（从Pod层面设定环境变量同样有效，目前尚不支持）
+
+硬编码环境变量可能对生产测试的Pod要严格区分定义，可以使用ConfigMap解耦
+
+
+```
+kubectl create configmap configmap-name --from-literal=key1=value1 --from-literal=key2=value2
+```
