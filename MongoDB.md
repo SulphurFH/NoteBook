@@ -1,6 +1,6 @@
 # Init DB
 
-``
+```
 mongod --port 27017 --dbpath /data/db1
 
 mongo --port 27017
@@ -20,4 +20,4 @@ mongo --port 27017  --authenticationDatabase "admin" -u "myUserAdmin" -p
 
 use UserPower
 db.createUser({user: "mtdtest", pwd: "mtdtest123", roles: [{role: "readWrite", db: "UserPower"}, {role: "read", db: "UserPower"}]})
-``
+```
