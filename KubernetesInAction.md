@@ -212,4 +212,9 @@ tls:
 
 ```
 kubectl create configmap configmap-name --from-literal=key1=value1 --from-literal=key2=value2
+kubectl create configmap configmap-name --from-file=config-file.conf
 ```
+
+configMap条目作为环境变量传递给pod（ValueForm）
+
+Pod引用ConfigMap中不存在的键会造成容器启动失败，创建了所需的configMap后，失败的容器会自动启动
