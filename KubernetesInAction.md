@@ -212,7 +212,7 @@ tls:
 
 ```
 kubectl create configmap configmap-name --from-literal=key1=value1 --from-literal=key2=value2
-kubectl create configmap configmap-name --from-file=config-file.conf
+kubectl create configmap configmap-name --from-file=config-file.conf # 也可以将整个文件夹导入
 ```
 
 configMap条目作为环境变量传递给pod（ValueForm）
