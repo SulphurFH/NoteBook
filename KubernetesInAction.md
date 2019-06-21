@@ -122,6 +122,7 @@ kubectl create -f svc.yaml
 # -- 代表这kubectl命令的结束，后面的将是在pod内部执行的命令
 kubectl exec pod-name -- curl -s http://service:ip
 kubectl exec -it pod-name bash
+kubectl exec -it pod-name -c container-name -- /bin/bash
 ```
 
 ## 服务发现
