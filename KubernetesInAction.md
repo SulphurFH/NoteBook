@@ -219,3 +219,15 @@ kubectl create configmap configmap-name --from-file=config-file.conf # 也可以
 configMap条目作为环境变量传递给pod（ValueForm）
 
 Pod引用ConfigMap中不存在的键会造成容器启动失败，创建了所需的configMap后，失败的容器会自动启动
+
+将卷挂载至某一个文件夹，意味着容器镜像中文件夹下原本存在的任何文件都会被隐藏，可以使用subPath
+
+修改configMap后，可以支持手动通知容器更新
+
+```
+# 更新nginx文件
+kubectl edit configmap configmap-name
+kubectl exec pod-name -c container-name -- nginx -s reload
+```
+
+Secret只会储存在节点的内存中
