@@ -231,3 +231,5 @@ kubectl exec pod-name -c container-name -- nginx -s reload
 ```
 
 Secret只会储存在节点的内存中（存储的为Base64编码，不止用来存储文本还可以存储二进制）
+
+secret最好不要通过环境变量暴露给容器
