@@ -1,5 +1,5 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
+
 
 class Node(object):
     def __init__(self, val, next=None):
@@ -42,24 +42,23 @@ class LinkList(object):
                 return
             p = p.next
 
-
     def printLinkList(self):
-        l = []
+        link = []
         if self.head is None:
             return
         temp = self.head
         while True:
-            l.append(temp.val)
+            link.append(temp.val)
             if not temp.next:
                 break
             temp = temp.next
-        print l
+        print link
         return
 
 
 nodeList = [3, 3, 1, 2, None, None, 3, 3, 4, 5, 3, 3, None]
 nodeList = [5, None]
-l = LinkList()
-l.initList(nodeList)
-l.removeElements(3)
-l.printLinkList()
+link_list = LinkList()
+link_list.initList(nodeList)
+link_list.removeElements(3)
+link_list.printLinkList()
