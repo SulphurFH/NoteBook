@@ -16,6 +16,33 @@ chmod +x bbr.sh
 ./bbr.sh
 ```
 
+## V2Ray
+
+```
+yum -y install wget
+wget https://install.direct/go.sh
+yum install -y zip unzip
+bash go.sh
+# 启动
+systemctl start v2ray
+
+# 停止
+systemctl stop v2ray
+# 重启
+systemctl restart v2ray
+# 开机自启
+systemctl enable v2ray
+
+cat /etc/v2ray/config.json
+
+# 查看已开放端口
+firewall-cmd --zone=public --list-ports
+# 添加开放端口
+firewall-cmd --zone=public --add-port=80/tcp --permanent
+# 重启防火墙
+firewall-cmd --reload
+```
+
 ## 私有PyPi
 
 1. 安装pypiserver
